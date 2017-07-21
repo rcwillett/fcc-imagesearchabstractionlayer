@@ -22,7 +22,7 @@ app.get("/", function (request, response) {
   response.sendFile(__dirname + '/views/index.html');
 });
 
-app.get("/latest/imagesearch", function(request, response){
+app.get("/latest", function(request, response){
   dbConnect(getLatestSearches, response, {});
 });
 
@@ -32,6 +32,7 @@ app.get("/imagesearch/:imageQuery", function (request, response) {
   var customSearchUrl = "https://www.googleapis.com/customsearch/v1?cx="+gcsID+"&key="+gAPIKey+"&num="+10+"&start="+offset+"&searchType=image&q="+imageQuery;
   var searchResults = [];
   var urlObject = new URL(customSearchUrl);
+  var bufferResult = [];
   
   console.log(urlObject.href);
   var httpsReq = https.request(urlObject, handleSearchResponse);
@@ -44,8 +45,9 @@ app.get("/imagesearch/:imageQuery", function (request, response) {
   
   function handleSearchResponse(searchResp){
     if(searchResp.statusCode === 200){
+      searchResp.setEncoding("utf-8");
       searchResp.on("data", handleSearchData);
-      searchResp.on("end", sendData);
+      searchResp.on("end", handleCompletedRequest);
     }
     else{
       sendError("Error in custom search request", response);
@@ -53,14 +55,21 @@ app.get("/imagesearch/:imageQuery", function (request, response) {
   }
   
   function handleSearchData(data){
-    console.log(data);
-    data.items.forEach(function(searchResult){
-      searchResults.push(new searchObject(searchResult));
-    });
+    bufferResult.push(data);
   }
   
-  function sendData(){
-    response.send(searchResults);
+  function handleCompletedRequest(){
+      var jsonStringResult = bufferResult.join("");
+      var jsonResult = JSON.parse(jsonStringResult);
+      sendResponse(jsonResult);
+  }
+  
+  function sendResponse(searchResults){
+    var returnArray = [];
+    searchResults.items.forEach(function(searchResult){
+      returnArray.push(new searchObject(searchResult));
+    });
+    response.send(returnArray);
     dbConnect(addSearch, response, {query: imageQuery, when: (new Date()).toString()});
   }
   
@@ -94,8 +103,8 @@ function addSearch(db, searchCollection, response, data){
 }
 
 function getLatestSearches(db, searchCollection, response, data){
-  var getLastSearches = searchCollection.find().limit(10).sort({_id:-1});
-  getLastSearches.then(function(err, results){
+  var getLastSearches = searchCollection.find({}, {_id: 0, query: 1, when: 1}).limit(10).sort({_id:-1});
+  getLastSearches.toArray(function(err, results){
     if(!err){
       response.send(results);
     }
