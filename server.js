@@ -123,5 +123,5 @@ function sendError(errorText, response){
 function searchObject(configObject){
   this.url = configObject.link;
   this.alt = configObject.title;
-  this.pageUrl = configObject.pageUrl;  
+  this.pageUrl = configObject.image.contextLink;  
 }
