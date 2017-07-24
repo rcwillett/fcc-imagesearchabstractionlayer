@@ -1,29 +1,51 @@
-<!-- This is a static file -->
-<!-- served from your routes in server.js -->
-
-<!-- You might want to try something fancier: -->
-<!-- html/nunjucks docs: https://mozilla.github.io/nunjucks/ -->
-<!-- pug: https://pugjs.org/ -->
-<!-- haml: http://haml.info/ -->
-<!-- hbs(handlebars): http://handlebarsjs.com/ -->
-
 <!DOCTYPE html>
 <html>
   <head>
     <title>Image Search Abstraction Layer</title>
-    <meta name="description" content="A wrapper around the image search abstraction layer">
+    <meta name="description" content="A wrapper around an image search endpoint">
     <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   </head>
   <body>
-    
-    <h1>
-      Index to be written upon completion
-    </h1>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12">
+          <h1>Willitt's Image Search Abstraction Project</h1>
+<h2>About</h2>
+    <p>
+      This is willitt's implemenation of the FCC Image Search Abstraction layer. The purpose of this project is to create an endpoint by which one can search for images based on a term of their choosing and receive a json response providing a list of results containing the image url, image title and the source site of the image. The other part of the implementation is to retreive a list of recent searches upon the request of a related endpoint. For my implementation I've abstracted an endpoint for a google custom search I created and provided a list of the last 10 searches made for the list of recent searches.
+    </p>
+<h2>
+  Usage
+    </h2>
+<p>Navigate to /imagesearch/(Your Search Terms here) to receive a json response of the following structure:</p>
+{
+[<br />
+{<br />
+url: {Url of Image},<br />
+alt: {Title of Image},<br />
+pageUrl: {Url of site image came from}<br />
+}, 
+...<br />
+]
+}
+<p>
+Navigate to /latest to receive a json response containg a list of the last 10 searched items in the following structure:
+    </p>
 
+[<br />
+{<br />
+query: {Query terms for search},<br />
+when: {Time request made}<br />
+}, 
+...<br />
+]
+        </div>
+      </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-2.2.1.min.js"
             integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
