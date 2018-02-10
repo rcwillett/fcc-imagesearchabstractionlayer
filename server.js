@@ -1,15 +1,13 @@
 var express = require('express');
 var https = require("https");
-const {URL} = require("url");
+var {URL} = require("url");
 var app = express();
 var mongodb = require('mongodb');
 var MongoClient = mongodb.MongoClient;
-var dbUrl = 'mongodb://Big_Willy:Fedora20@ds028310.mlab.com:28310/url_shortener';
+var dbUrl = process.env.DBURL;
 
-// https://www.googleapis.com/customsearch/v1?cx=011924279700652319503:e73ssvplb2m&key=AIzaSyDfNJTWbevtP6ICuA7n9q2FachcMLaW-DI
-
-var gcsID = "011924279700652319503:e73ssvplb2m";
-var gAPIKey = "AIzaSyDfNJTWbevtP6ICuA7n9q2FachcMLaW-DI";
+var gcsID = process.env.GCSID;
+var gAPIKey = process.env.GAPIKEY;
 
 app.use(express.static('public'));
 
